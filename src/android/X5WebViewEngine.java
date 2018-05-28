@@ -50,13 +50,13 @@ import java.lang.reflect.Method;
 /**
  * Glue class between CordovaWebView (main Cordova logic) and SystemWebView (the actual View).
  * We make the Engine separate from the actual View so that:
- *  A) We don't need to worry about WebView methods clashing with CordovaWebViewEngine methods
- *     (e.g.: goBack() is void for WebView, and boolean for CordovaWebViewEngine)
- *  B) Separating the actual View from the Engine makes API surfaces smaller.
+ * A) We don't need to worry about WebView methods clashing with CordovaWebViewEngine methods
+ * (e.g.: goBack() is void for WebView, and boolean for CordovaWebViewEngine)
+ * B) Separating the actual View from the Engine makes API surfaces smaller.
  * Class uses two-phase initialization. However, CordovaWebView is responsible for calling .init().
  */
 public class X5WebViewEngine implements CordovaWebViewEngine {
-    private static final String TAG = "X5WebViewEngine";
+    public static final String TAG = "X5WebViewEngine";
 
     protected final X5WebView webView;
     protected final X5CookieManager cookieManager;
@@ -70,7 +70,9 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
     protected NativeToJsMessageQueue nativeToJsMessageQueue;
     private BroadcastReceiver receiver;
 
-    /** Used when created via reflection. */
+    /**
+     * Used when created via reflection.
+     */
     public X5WebViewEngine(Context context, CordovaPreferences preferences) {
         this(new X5WebView(context), preferences);
     }
@@ -87,8 +89,8 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
 
     @Override
     public void init(CordovaWebView parentWebView, CordovaInterface cordova, Client client,
-              CordovaResourceApi resourceApi, PluginManager pluginManager,
-              NativeToJsMessageQueue nativeToJsMessageQueue) {
+                     CordovaResourceApi resourceApi, PluginManager pluginManager,
+                     NativeToJsMessageQueue nativeToJsMessageQueue) {
         if (this.cordova != null) {
             throw new IllegalStateException();
         }
@@ -111,6 +113,7 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
             public void setNetworkAvailable(boolean value) {
                 webView.setNetworkAvailable(value);
             }
+
             @Override
             public void runOnUiThread(Runnable r) {
                 X5WebViewEngine.this.cordova.getActivity().runOnUiThread(r);
@@ -148,13 +151,12 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
 
         // Set the nav dump for HTC 2.x devices (disabling for ICS, deprecated entirely for Jellybean 4.2)
         try {
-            Method gingerbread_getMethod =  WebSettings.class.getMethod("setNavDump", new Class[] { boolean.class });
+            Method gingerbread_getMethod = WebSettings.class.getMethod("setNavDump", new Class[]{boolean.class});
 
             String manufacturer = Build.MANUFACTURER;
             Log.d(TAG, "CordovaWebView is running on device made by: " + manufacturer);
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB &&
-                    Build.MANUFACTURER.contains("HTC"))
-            {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB &&
+                    Build.MANUFACTURER.contains("HTC")) {
                 gingerbread_getMethod.invoke(settings, true);
             }
         } catch (NoSuchMethodException e) {
@@ -189,7 +191,7 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
         //Determine whether we're in debug or release mode, and turn on Debugging!
         ApplicationInfo appInfo = webView.getContext().getApplicationContext().getApplicationInfo();
         if ((appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0 &&
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             enableRemoteDebugging();
         }
 
@@ -318,10 +320,12 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
     @Override
     public void setPaused(boolean value) {
         if (value) {
-            webView.onPause();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                webView.onPause();
             webView.pauseTimers();
         } else {
-            webView.onResume();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                webView.onResume();
             webView.resumeTimers();
         }
     }
@@ -343,17 +347,18 @@ public class X5WebViewEngine implements CordovaWebViewEngine {
     @Override
     public void evaluateJavascript(String js, ValueCallback<String> callback) {
 
-        if(callback == null)
-            webView.evaluateJavascript(js,null);
+        if (callback == null)
+            webView.evaluateJavascript(js, null);
 
-         final ValueCallback<String> proxyCallback = callback;
-         com.tencent.smtt.sdk.ValueCallback mCallback = o -> {
-             if(o instanceof String) {
-                 assert proxyCallback != null;
-                 proxyCallback.onReceiveValue((String) o);
-             }
-         };
-        webView.evaluateJavascript(js,mCallback);
+        final ValueCallback<String> proxyCallback = callback;
+        com.tencent.smtt.sdk.ValueCallback mCallback = new com.tencent.smtt.sdk.ValueCallback() {
+            @Override
+            public void onReceiveValue(Object o) {
+                if (o instanceof String)
+                    proxyCallback.onReceiveValue((String) o);
+            }
+        };
+        webView.evaluateJavascript(js, mCallback);
     }
 }
 

@@ -1,0 +1,25 @@
+{
+  "name": "cordova-plugin-tbs",
+  "version": "1.0.1",
+  "description": "Tencent Browser Service plugin for Apache Cordova 8.0+",
+  "cordova": {
+    "id": "cordova-plugin-tbs",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssbunny/cordova-plugin-tbs.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "ssbunny",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/ssbunny/cordova-plugin-tbs/issues"
+  },
+  "homepage": "https://github.com/ssbunny/cordova-plugin-tbs#readme"
+}

@@ -1,14 +1,30 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-tbs"
-    version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+    version="1.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>cordova-plugin-tbs</name>
+    <author>ssbunny</author>
+    <license>Apache 2.0 License</license>
+
+    <engines>
+        <engine name="cordova-android" version=">=7"/>
+    </engines>
 
     <platform name="android">
 
+        <js-module name="X5Webview" src="www/x5webview.js">
+            <clobbers target="navigator.x5webview" />
+        </js-module>
+
         <config-file parent="/*" target="res/xml/config.xml">
+            <preference name="webView" value="org.apache.cordova.x5webview.X5WebViewEngine"/>
             <preference name="AppendUserAgent" value="x5webview" />
             <preference name="android-minSdkVersion" value="16" />
             <allow-navigation href="*" />
+            <feature name="X5Webview">
+                <param name="android-package"
+                    value="org.apache.cordova.x5webview.X5WebViewAPICordovaPlugin" />
+                <param name="onload" value="true" />
+            </feature>
         </config-file>
 
         <config-file parent="/*" target="AndroidManifest.xml">
@@ -22,9 +38,11 @@
         <lib-file src="libs/tbs_sdk.jar" />
         <lib-file src="libs/armeabi/liblbs.so" />
 
-        <source-file src="src/android/X5CookieManager.java"
+        <source-file src="src/android/X5WebViewAPICordovaPlugin.java"
             target-dir="src/org/apache/cordova/x5webview" />
 
+        <source-file src="src/android/X5CookieManager.java"
+            target-dir="src/org/apache/cordova/x5webview" />
         <source-file src="src/android/X5CordovaClientCertRequest.java"
             target-dir="src/org/apache/cordova/x5webview" />
         <source-file src="src/android/X5CordovaHttpAuthHandler.java"
@@ -40,6 +58,9 @@
         <source-file src="src/android/X5WebViewEngine.java"
             target-dir="src/org/apache/cordova/x5webview" />
 
+        <info>
+            Tencent Browser Service plugin for Apache Cordova 8.0+
+        </info>
     </platform>
 
 </plugin>
