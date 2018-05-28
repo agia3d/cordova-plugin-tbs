@@ -1,3 +1,5 @@
+package org.apache.cordova.x5webview;
+
 import android.util.Log;
 
 import org.apache.cordova.CallbackContext;

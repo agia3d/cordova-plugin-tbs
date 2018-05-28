@@ -17,6 +17,8 @@
        under the License.
 */
 
+package org.apache.cordova.x5webview;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;

@@ -1,3 +1,5 @@
+package org.apache.cordova.x5webview;
+
 import android.annotation.TargetApi;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;

@@ -1,3 +1,5 @@
+package org.apache.cordova.x5webview;
+
 import com.tencent.smtt.export.external.interfaces.HttpAuthHandler;
 
 import org.apache.cordova.ICordovaHttpAuthHandler;

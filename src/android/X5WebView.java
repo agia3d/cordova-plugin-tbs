@@ -1,3 +1,5 @@
+package org.apache.cordova.x5webview;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
