@@ -18,7 +18,7 @@
         <config-file parent="/*" target="res/xml/config.xml">
             <preference name="webView" value="org.apache.cordova.x5webview.X5WebViewEngine"/>
             <preference name="AppendUserAgent" value="x5webview" />
-            <preference name="android-minSdkVersion" value="16" />
+            <preference name="android-minSdkVersion" value="19" />
             <allow-navigation href="*" />
             <feature name="X5Webview">
                 <param name="android-package"
